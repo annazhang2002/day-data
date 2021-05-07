@@ -1,22 +1,26 @@
 {
   "files": {
-    "main.css": "/day-data/static/css/main.4221c4c3.chunk.css",
-    "main.js": "/day-data/static/js/main.bf02d9c2.chunk.js",
-    "main.js.map": "/day-data/static/js/main.bf02d9c2.chunk.js.map",
-    "runtime-main.js": "/day-data/static/js/runtime-main.c9255415.js",
-    "runtime-main.js.map": "/day-data/static/js/runtime-main.c9255415.js.map",
-    "static/js/2.25de9145.chunk.js": "/day-data/static/js/2.25de9145.chunk.js",
-    "static/js/2.25de9145.chunk.js.map": "/day-data/static/js/2.25de9145.chunk.js.map",
-    "static/js/3.3cd32160.chunk.js": "/day-data/static/js/3.3cd32160.chunk.js",
-    "static/js/3.3cd32160.chunk.js.map": "/day-data/static/js/3.3cd32160.chunk.js.map",
+    "main.css": "/day-data/static/css/main.db4cf20f.chunk.css",
+    "main.js": "/day-data/static/js/main.bf637fe7.chunk.js",
+    "main.js.map": "/day-data/static/js/main.bf637fe7.chunk.js.map",
+    "runtime-main.js": "/day-data/static/js/runtime-main.3260c11f.js",
+    "runtime-main.js.map": "/day-data/static/js/runtime-main.3260c11f.js.map",
+    "static/css/2.0e8f21c8.chunk.css": "/day-data/static/css/2.0e8f21c8.chunk.css",
+    "static/js/2.83ff5614.chunk.js": "/day-data/static/js/2.83ff5614.chunk.js",
+    "static/js/2.83ff5614.chunk.js.map": "/day-data/static/js/2.83ff5614.chunk.js.map",
+    "static/js/3.35607dc1.chunk.js": "/day-data/static/js/3.35607dc1.chunk.js",
+    "static/js/3.35607dc1.chunk.js.map": "/day-data/static/js/3.35607dc1.chunk.js.map",
     "index.html": "/day-data/index.html",
-    "static/css/main.4221c4c3.chunk.css.map": "/day-data/static/css/main.4221c4c3.chunk.css.map",
-    "static/js/2.25de9145.chunk.js.LICENSE.txt": "/day-data/static/js/2.25de9145.chunk.js.LICENSE.txt"
+    "static/css/2.0e8f21c8.chunk.css.map": "/day-data/static/css/2.0e8f21c8.chunk.css.map",
+    "static/css/main.db4cf20f.chunk.css.map": "/day-data/static/css/main.db4cf20f.chunk.css.map",
+    "static/js/2.83ff5614.chunk.js.LICENSE.txt": "/day-data/static/js/2.83ff5614.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/day-data/static/media/outline-icons.ddae9b1b.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.c9255415.js",
-    "static/js/2.25de9145.chunk.js",
-    "static/css/main.4221c4c3.chunk.css",
-    "static/js/main.bf02d9c2.chunk.js"
+    "static/js/runtime-main.3260c11f.js",
+    "static/css/2.0e8f21c8.chunk.css",
+    "static/js/2.83ff5614.chunk.js",
+    "static/css/main.db4cf20f.chunk.css",
+    "static/js/main.bf637fe7.chunk.js"
   ]
 }
