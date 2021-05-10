@@ -1,92 +1,10 @@
 import React, { useState } from "react";
-import { dataRef } from '../../firebase'
+import { dataRef, userDoc, auth } from '../../firebase'
 import { parsedValue, getColor } from './util';
 import _ from "lodash";
 import { Input, Button, Checkbox, Form, Label, Icon } from 'semantic-ui-react'
+import { defaultDataState, dataFields } from '../../static/data'
 import "./logformpage.scss";
-
-const dataFields = {
-    food: {
-        type: 'array',
-        name: 'Food:',
-        new: 'newFood',
-        add: 'Food',
-    },
-    activities: {
-        type: 'array',
-        name: 'Activities:',
-        new: 'newActivity',
-        add: 'Activity',
-    },
-    exercise: {
-        type: 'array',
-        name: 'Exercise:',
-        new: 'newExercise',
-        add: 'Exercise',
-    },
-    hadBreakfast: {
-        type: 'checkbox',
-        name: 'Had Breakfast?',
-    },
-    journaled: {
-        type: 'checkbox',
-        name: 'Did I Journal?',
-    },
-    showered: {
-        type: 'checkbox',
-        name: 'Did I Shower?',
-    },
-    dressup: {
-        type: 'checkbox',
-        name: 'Did I Dress Up or Feel Cute?',
-    },
-    skincare: {
-        type: 'checkbox',
-        name: 'Did I Do My Skincare Routine?',
-    },
-    peopleSaw: {
-        type: 'array',
-        name: 'People I Saw:',
-        new: 'newPerson',
-        add: 'Person',
-    },
-    readingTime: {
-        type: 'number',
-        name: 'Reading Time (in minutes):',
-        min: 0,
-        max: 3600,
-    },
-    weather: {
-        type: 'text',
-        name: 'Weather:',
-    },
-    rating: {
-        type: 'number',
-        name: 'How would you rate today?',
-        min: 0,
-        max: 10
-    },
-}
-
-const defaultDataState = {
-    activities: [],
-    date: new Date(),
-    dressup: false,
-    exercise: [],
-    food: [],
-    hadBreakfast: false,
-    journaled: false,
-    newActivity: '',
-    newExercise: '',
-    newFood: '',
-    newPerson: '',
-    peopleSaw: [],
-    showered: false,
-    skincare: false,
-    rating: 5,
-    readingTime: 0,
-    weather: '',
-}
 
 export const LogFormPage = () => {
     const [data, setData] = useState(defaultDataState);
@@ -94,8 +12,11 @@ export const LogFormPage = () => {
     // add the logged data to firebase
     const addData = () => {
         // console.log(_.omit(data, ['newActivity', 'newExercise', 'newPerson', 'newFood', '']))
+        const removeNews = _.omit(data, ['newActivity', 'newExercise', 'newPerson', 'newFood', ''])
+        const addUser = { ...removeNews, user: auth.currentUser.uid }
+        console.log(addUser)
         dataRef
-            .add(_.omit(data, ['newActivity', 'newExercise', 'newPerson', 'newFood', '']))
+            .add(addUser)
             .then((_doc) => {
                 setData(defaultDataState);
             })
@@ -141,7 +62,7 @@ export const LogFormPage = () => {
             {Object.entries(dataFields).map(([key, value]) => {
                 if (value.type === 'array') {
                     return (
-                        <div style={{ marginBottom: '20px' }}>
+                        <div style={{ marginBottom: '20px' }} key={key}>
                             <Form.Group style={{ flexDirection: 'column' }}>
                                 <Form.Field inline>
                                     <label>{value.name}</label>
@@ -158,17 +79,17 @@ export const LogFormPage = () => {
                         </div>
                     );
                 } else if (value.type === 'number') {
-                    return (<Form.Field inline>
+                    return (<Form.Field inline key={key}>
                         <label>{value.name}</label>
                         <Input type={value.type} min={value.min} max={value.max} id={key} value={data[key]} onChange={handleChange} />
                     </Form.Field>)
                 } else if (value.type === 'checkbox') {
-                    return (<Form.Field inline>
+                    return (<Form.Field inline key={key}>
                         <label>{value.name}</label>
                         <Checkbox type={value.type} id={key} checked={data[key]} onChange={handleChange} />
                     </Form.Field>)
                 } else {
-                    return (<Form.Field inline>
+                    return (<Form.Field inline key={key}>
                         <label>{value.name}</label>
                         <Input placeholder={value.name} type={value.type} id={key} value={data[key]} onChange={handleChange} />
                     </Form.Field>)

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./../datapage.scss";
-import { dataRef } from '../../../firebase'
-import { allFields } from './../util'
-
-const arrays = ['activities'];
+import { dataRef, auth } from '../../../firebase'
+import { allFields, arrayFields, fieldSelectionOptions } from './../util'
+import { Dropdown, Button, Grid } from 'semantic-ui-react'
 
 export const CompareData = () => {
     const [field, setField] = useState(allFields[0]);
@@ -11,12 +10,14 @@ export const CompareData = () => {
 
     const getResults = (event) => {
         console.log(event)
+        console.log(field)
         dataRef
+            .where('user', '==', auth.currentUser.uid)
             .onSnapshot(
                 querySnapshot => {
                     var ratings = {};
                     querySnapshot.forEach((doc) => {
-                        if (!arrays.includes(field)) {
+                        if (!arrayFields.includes(field)) {
                             const value = doc.data()[field];
                             const rating = doc.data().rating;
                             if (Object.keys(ratings).includes(value)) {
@@ -66,11 +67,23 @@ export const CompareData = () => {
     return (
         <div>
             <h1>Which _ will make the best day?</h1>
-            <select id="field" onChange={event => setField(event.target.value)}>
-                {allFields.map((option) => <option value={option}>{option}</option>)}
-            </select>
-            <button id="getResults" onClick={(e) => getResults(e)}>Calculate!</button>
-            {ratingArr.map((rating) => (<p>{rating.value}: {rating.average}</p>)
+            <Grid stackable columns={2}>
+                <Grid.Row>
+                    <Grid.Column>
+                        <Dropdown
+                            placeholder='Field'
+                            fluid
+                            selection
+                            options={fieldSelectionOptions}
+                            id="field"
+                            onChange={(event, { value }) => setField(value)} />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Button id="getResults" onClick={(e) => getResults(e)}>Calculate!</Button>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+            {ratingArr.map((rating) => (<h3>{rating.value}: {rating.average}</h3>)
             )}
         </div>
     )
