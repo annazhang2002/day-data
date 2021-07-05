@@ -9,8 +9,6 @@ export const CompareData = () => {
     const [ratingArr, setRatingArr] = useState([]);
 
     const getResults = (event) => {
-        console.log(event)
-        console.log(field)
         dataRef
             .where('user', '==', auth.currentUser.uid)
             .onSnapshot(

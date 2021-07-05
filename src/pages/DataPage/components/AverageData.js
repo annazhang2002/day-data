@@ -15,9 +15,6 @@ export const AverageData = () => {
 
     // update input changes
     const handleChange = (event, value, id) => {
-        console.log(event)
-        console.log(value)
-        console.log(id)
         setQueryData({
             ...queryData,
             [id]: value,
@@ -25,7 +22,6 @@ export const AverageData = () => {
     };
 
     const getResults = (event) => {
-        console.log(event)
         dataRef
             .where('user', '==', auth.currentUser.uid)
             .where(queryData.field, queryData.operator, queryData.value)
