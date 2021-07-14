@@ -1,7 +1,6 @@
-import React, { useState, useContext } from "react";
+import React from "react";
 import { provider, auth } from '../../firebase'
 import { Container, Button, Header } from 'semantic-ui-react'
-import _ from "lodash";
 import "./loginpage.scss";
 
 export const LoginPage = () => {

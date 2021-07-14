@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import "./../datapage.scss";
 import { dataRef, auth } from '../../../firebase'
-import { allFields, arrayFields, fieldSelectionOptions } from './../util'
+import { allFields, arrayFields, fieldSelectionOptions, allRatingFields } from './../util'
 import { Dropdown, Button, Grid } from 'semantic-ui-react'
+import _ from "lodash";
 
 export const CompareData = () => {
     const [field, setField] = useState(allFields[0]);
+    const [ratingField, setRatingField] = useState(allRatingFields[0].value);
     const [ratingArr, setRatingArr] = useState([]);
+    console.log(allRatingFields)
+    console.log(ratingField)
 
     const getResults = (event) => {
         dataRef
@@ -15,22 +19,19 @@ export const CompareData = () => {
                 querySnapshot => {
                     var ratings = {};
                     querySnapshot.forEach((doc) => {
+                        const values = doc.data()[field];
+                        const rating = doc.data()[ratingField];
                         if (!arrayFields.includes(field)) {
-                            const value = doc.data()[field];
-                            const rating = doc.data().rating;
-                            if (Object.keys(ratings).includes(value)) {
-                                ratings[value].sum += rating;
-                                ratings[value].count++;
+                            if (Object.keys(ratings).includes(values)) {
+                                ratings[values].sum += rating;
+                                ratings[values].count++;
                             } else {
-                                ratings[value] = {
+                                ratings[values] = {
                                     sum: rating,
                                     count: 1
                                 }
                             }
                         } else {
-                            const values = doc.data()[field];
-                            const rating = doc.data().rating;
-                            console.log(values)
                             values.forEach(value => {
                                 if (Object.keys(ratings).includes(value)) {
                                     ratings[value].sum += rating;
@@ -54,6 +55,7 @@ export const CompareData = () => {
                         }
                         ratingArray.push(rating)
                     })
+                    ratingArray = _.reverse(_.sortBy(ratingArray, 'average'))
                     setRatingArr(ratingArray)
                 },
                 error => {
@@ -65,7 +67,7 @@ export const CompareData = () => {
     return (
         <div>
             <h1>Which _ will make the best day?</h1>
-            <Grid stackable columns={2}>
+            <Grid stackable columns={3}>
                 <Grid.Row>
                     <Grid.Column>
                         <Dropdown
@@ -75,6 +77,15 @@ export const CompareData = () => {
                             options={fieldSelectionOptions}
                             id="field"
                             onChange={(event, { value }) => setField(value)} />
+                    </Grid.Column>
+                    <Grid.Column>
+                        <Dropdown
+                            placeholder='Rating Field'
+                            fluid
+                            selection
+                            options={allRatingFields}
+                            id="ratingField"
+                            onChange={(event, { value }) => setRatingField(value)} />
                     </Grid.Column>
                     <Grid.Column>
                         <Button id="getResults" onClick={(e) => getResults(e)}>Calculate!</Button>

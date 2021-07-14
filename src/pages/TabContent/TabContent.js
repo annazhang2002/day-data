@@ -1,37 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { dataRef, auth } from '../../firebase'
-import _ from "lodash";
-import { Tab, Button } from 'semantic-ui-react'
+import React, { useState } from "react";
+import { Tab } from 'semantic-ui-react'
 import "./tabcontent.scss";
 import LogFormPage from '../LogFormPage'
 import DataPage from '../DataPage'
 import TablePage from '../TablePage'
 
 export const TabContent = () => {
-    // check if there has been a log today
-    // useEffect(() => {
-    //     dataRef
-    //         .orderBy('date', 'desc')
-    //         .limit(1)
-    //         .onSnapshot(
-    //             querySnapshot => {
-    //                 querySnapshot.forEach((doc) => {
-    //                     const mostRecentDate = doc.data().date.toDate();
-    //                     // if (sameDay(mostRecentDate, new Date())) {
-    //                     //     setLoggedToday(true);
-    //                     // } else {
-    //                     //     setLoggedToday(false);
-    //                     // }
-    //                 });
-    //             },
-    //             error => {
-    //                 console.log(error);
-    //             }
-    //         )
-    // })
-
+    const [activeTab, setActiveTab] = useState(0);
     const panes = [
-        { menuItem: 'Logging Form', render: () => <Tab.Pane><LogFormPage user /></Tab.Pane> },
+        { menuItem: 'Logging Form', render: () => <Tab.Pane><LogFormPage user changeTab={setActiveTab} /></Tab.Pane> },
         { menuItem: 'Data Analysis', render: () => <Tab.Pane><DataPage user /></Tab.Pane> },
         {
             menuItem: 'Table Data', render: () =>
@@ -40,6 +17,6 @@ export const TabContent = () => {
     ]
 
     return (
-        <Tab panes={panes} className="tabs-container" />
+        <Tab panes={panes} activeIndex={activeTab} className="tabs-container" onTabChange={(e, { activeIndex }) => setActiveTab(activeIndex)} />
     )
 }

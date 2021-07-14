@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { dataRef, auth } from '../../firebase'
 import { parsedValue } from '../../static/util';
 import _ from "lodash";
-import { Button, Form } from 'semantic-ui-react'
+import { Button, Form, Modal } from 'semantic-ui-react'
 import { defaultDataState, dataFields } from '../../static/data'
 import "./logformpage.scss";
 import { FieldInput } from "../../components/FieldInput/FieldInput";
 
-export const LogFormPage = () => {
+export const LogFormPage = (props) => {
     const [data, setData] = useState(defaultDataState);
+    const [showModal, setShowModal] = useState(false);
 
     // add the logged data to firebase
     const addData = () => {
@@ -19,6 +20,7 @@ export const LogFormPage = () => {
             .add(finalData)
             .then((_doc) => {
                 setData(defaultDataState);
+                setShowModal(true);
             })
             .catch((error) => {
                 console.log("bad" + error)
@@ -70,6 +72,16 @@ export const LogFormPage = () => {
 
             })}
             <Button primary onClick={addData}>Add Day</Button>
+            <Modal
+                size='mini'
+                open={showModal}
+                onClose={() => setShowModal(false)}
+            >
+                <Modal.Content>Day Successfully Logged!</Modal.Content>
+                <Modal.Actions>
+                    <Button positive onClick={() => props.changeTab(2)}>Ok</Button>
+                </Modal.Actions>
+            </Modal>
         </Form>
     )
 }

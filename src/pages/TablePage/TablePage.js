@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { dataRef, auth } from '../../firebase'
 import _ from "lodash";
-import { Button, Checkbox } from 'semantic-ui-react'
+import { Button, Checkbox, Icon, Confirm } from 'semantic-ui-react'
 import "./tablepage.scss";
 import { dataFields } from '../../static/data'
 import { parsedValue } from '../../static/util';
@@ -18,6 +18,8 @@ export const TablePage = () => {
     })
     const [loading, setLoading] = useState(true);
     const [newListItem, setNewListItem] = useState();
+    const [showModal, setShowModal] = useState(false);
+    const [rowToDelete, setRowToDelete] = useState();
 
     useEffect(() => {
         console.log("use effect to get table data")
@@ -26,7 +28,7 @@ export const TablePage = () => {
             .orderBy('date', 'desc')
             .onSnapshot(
                 querySnapshot => {
-                    var queryTableValues = [];
+                    var queryTableValues = {};
                     querySnapshot.forEach((doc) => {
                         const row = doc.data();
                         var newRowValues = {};
@@ -37,10 +39,9 @@ export const TablePage = () => {
                                 cellValue: fieldValue instanceof Object && fieldValue.seconds ? new Date(fieldValue.seconds * 1000) : fieldValue,
                                 show: true,
                                 type: value.type,
-                                id: doc.id,
                             }
                         })
-                        queryTableValues.push(newRowValues);
+                        queryTableValues[doc.id] = newRowValues;
                     });
                     setTableValues(queryTableValues)
                     console.log(queryTableValues)
@@ -93,6 +94,16 @@ export const TablePage = () => {
         setEditField({ ...editField, fieldValue: _.concat(editField.fieldValue, (newListItem)) })
         setNewListItem("")
     }
+
+    const deleteRow = (rowId) => {
+        dataRef.doc(rowId).delete().then(() => {
+            console.log("Document successfully deleted!");
+            setShowModal(false)
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        });
+    }
+
     return (
         <div>
             <h1>Table Data</h1>
@@ -100,19 +111,20 @@ export const TablePage = () => {
                 <table className="ui celled table">
                     <thead>
                         <tr>
-                            {Object.values(tableValues[0]).map((field, index) => {
+                            {Object.values(Object.values(tableValues)[0]).map((field, index) => {
                                 return (<th key={index} className="col-name">{field.header}</th>)
                             })}
+                            <th>Delete Row</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tableValues.map((row, index) => {
+                        {Object.entries(tableValues).map(([rowId, row]) => {
                             return (
-                                <tr key={index}>
+                                <tr key={rowId}>
                                     {Object.entries(row).map(([key, value]) => {
                                         return (
-                                            <td data-label={key} key={key + String(index)} >
-                                                {editField.inUse && editField.fieldName === key && editField.rowIndex === index ?
+                                            <td data-label={key} key={key + rowId} >
+                                                {editField.inUse && editField.fieldName === key && editField.rowIndex === rowId ?
                                                     <div className="ui action input">
                                                         <FieldInput
                                                             dataValue={dataFields[key]}
@@ -123,23 +135,32 @@ export const TablePage = () => {
                                                             onDeleteFromArray={(itemValue) => removeValueFromArray(itemValue)}
                                                             newArrayValue={newListItem}
                                                             addToDataArray={addValuetoArray} />
-                                                        <Button onClick={() => submitChange(value.id, key, value.cellValue, editField.fieldValue)}>Done</Button>
+                                                        <Button onClick={() => submitChange(rowId, key, value.cellValue, editField.fieldValue)}>Done</Button>
                                                     </div>
                                                     : <div className="custom-cell">
                                                         <div className="cell-value">
                                                             {displayValue(value.cellValue, key)}
                                                         </div>
-                                                        {value.show && <Button className="edit-btn" size="mini" onClick={() => toggleEditCell(index, key, value.cellValue)}><i className="edit icon edit-icon"></i></Button>}
+                                                        {value.show && <Button className="edit-btn" size="mini" onClick={() => toggleEditCell(rowId, key, value.cellValue)}><i className="edit icon edit-icon"></i></Button>}
                                                     </div>
                                                 }
                                             </td>)
                                     })}
+                                    <td><Button><Icon name='delete' onClick={() => { setRowToDelete(rowId); setShowModal(true) }} /></Button></td>
                                 </tr>)
                         })}
                     </tbody>
                 </table>
             )}
             <Button onClick={() => auth.signOut()}>Logout</Button>
+            <Confirm
+                open={showModal}
+                content='Are you sure you want to delete this row?'
+                confirmButton="Delete"
+                onCancel={() => setShowModal(false)}
+                onConfirm={() => deleteRow(rowToDelete)}
+                size='mini'
+            />
         </div>
     )
 }

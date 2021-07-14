@@ -14,6 +14,7 @@ export const dataFields = {
         max: 10,
         tableHeader: 'Happiness',
         editInTable: true,
+        ratingField: true,
     },
     excitement: {
         type: 'number',
@@ -22,6 +23,7 @@ export const dataFields = {
         max: 10,
         tableHeader: 'Excitement',
         editInTable: true,
+        ratingField: true,
     },
     stress: {
         type: 'number',
@@ -30,6 +32,7 @@ export const dataFields = {
         max: 10,
         tableHeader: 'Stress',
         editInTable: true,
+        ratingField: true,
     },
     activities: {
         type: 'array',

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { dataRef, auth, userDoc } from '../../../firebase'
+import React, { useState } from "react";
+import { dataRef, auth } from '../../../firebase'
 import { allFields, allOperators, fieldSelectionOptions, operatorSelectionOptions } from './../util'
 import "./../datapage.scss";
 import { Dropdown, Input, Button, Grid } from 'semantic-ui-react'
@@ -11,7 +11,11 @@ export const AverageData = () => {
         operator: allOperators[0],
         value: ''
     })
-    const [average, setAverage] = useState(0);
+    const [average, setAverage] = useState({
+        happiness: 0,
+        excitement: 0,
+        stress: 0,
+    });
 
     // update input changes
     const handleChange = (event, value, id) => {
@@ -27,13 +31,19 @@ export const AverageData = () => {
             .where(queryData.field, queryData.operator, queryData.value)
             .onSnapshot(
                 querySnapshot => {
-                    var sum = 0;
-                    console.log(querySnapshot)
+                    var happiness = 0;
+                    var excitement = 0;
+                    var stress = 0;
                     querySnapshot.forEach((doc) => {
-                        const rating = doc.data().rating;
-                        sum += rating;
+                        happiness += doc.data().rating;
+                        excitement += doc.data().excitement;
+                        stress += doc.data().stress;
                     });
-                    setAverage(sum / querySnapshot.size)
+                    setAverage({
+                        happiness: happiness / querySnapshot.size,
+                        excitement: excitement / querySnapshot.size,
+                        stress: stress / querySnapshot.size,
+                    })
                 },
                 error => {
                     console.log(error);
@@ -72,7 +82,9 @@ export const AverageData = () => {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {average != 0 && <h3>Rating: {average}</h3>}
+            {average.happiness !== 0 && <h3>Happiness: {average.happiness}</h3>}
+            {average.excitement !== 0 && <h3>Excitement: {average.excitement}</h3>}
+            {average.stress !== 0 && <h3>Stress: {average.stress}</h3>}
         </div>
     )
 }

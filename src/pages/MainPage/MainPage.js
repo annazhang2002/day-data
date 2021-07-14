@@ -1,26 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { dataRef, userDoc, auth } from '../../firebase'
-import _ from "lodash";
-import { Loader, FormField } from 'semantic-ui-react'
+import { auth } from '../../firebase'
+import { Loader } from 'semantic-ui-react'
 import "./mainpage.scss";
 import TabContent from '../TabContent'
 import LoginPage from '../LoginPage'
 
 export const MainPage = () => {
-
-    // useEffect(() => {
-    //     dataRef
-    //         .get()
-    //         .then(
-    //             querySnapshot => {
-    //                 querySnapshot.forEach((doc) => {
-    //                     console.log(doc.id)
-    //                     console.log(auth.currentUser.uid)
-    //                     dataRef.doc(doc.id).update({ 'newActivity': FieldValue.delete });
-    //                 })
-    //             })
-    // }, [])
-
     const [loggedIn, toggleLogin] = useState(auth.currentUser != null)
     const [loading, setLoading] = useState(true);
 
@@ -33,7 +18,7 @@ export const MainPage = () => {
             }
             setLoading(false)
         });
-    }, [auth]);
+    }, []);
 
     return (
         <div className="main-container">
